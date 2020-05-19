@@ -1,6 +1,8 @@
 module ApidocoDsl
   class ApiDoc
-    attr_accessor :params, :response_params, :doc_published, :doc_name, :doc_endpoint, :doc_http_method, :doc_header, :doc_examples
+    attr_accessor :params, :response_params, :doc_published, :doc_name,
+                  :doc_endpoint, :doc_http_method, :doc_header, :doc_examples,
+                  :doc_sort_order
 
     def initialize()
       @params = []
@@ -18,14 +20,15 @@ module ApidocoDsl
 
     def to_json
       doc = {}
-      doc['published'] = doc_published unless doc_published.nil?
-      doc['name'] = doc_name unless doc_name.nil?
-      doc['end_point'] = doc_endpoint unless doc_endpoint.nil?
-      doc['http_method'] = doc_http_method unless doc_http_method.nil?
-      doc['params'] = params.map(&:to_h) unless params.empty?
+      doc['published']       = doc_published unless doc_published.nil?
+      doc['name']            = doc_name unless doc_name.nil?
+      doc['end_point']       = doc_endpoint unless doc_endpoint.nil?
+      doc['http_method']     = doc_http_method unless doc_http_method.nil?
+      doc['params']          = params.map(&:to_h) unless params.empty?
       doc['response_params'] = response_params.map(&:to_h) unless response_params.empty?
-      doc['header'] = doc_header unless doc_header.nil?
-      doc['examples'] = doc_examples unless doc_examples.empty?
+      doc['header']          = doc_header unless doc_header.nil?
+      doc['examples']        = doc_examples unless doc_examples.empty?
+      doc['sort_order']      = doc_sort_order unless doc_sort_order.nil?
 
       return JSON.pretty_generate(doc)
     end
