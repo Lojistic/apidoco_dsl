@@ -53,11 +53,11 @@ module ApidocoDsl
     @doc.doc_header = h
   end
 
-  def params(group: nil, &block)
+  def params(group: nil, array_of: nil, &block)
     raise "must be inside a doc block"  unless @doc
 
     @params = []
-    @params = fetch_param_group(group) if group
+    @params = fetch_param_group(group) if group || array_of
 
     yield if block_given?
 
@@ -65,11 +65,11 @@ module ApidocoDsl
     @params = nil
   end
 
-  def response_params(group: nil, &block)
+  def response_params(group: nil, array_of: nil, &block)
     raise "must be inside a doc block"  unless @doc
 
     @response_params = []
-    @response_params = fetch_param_group(group) if group
+    @response_params = fetch_param_group(group) if group || array_of
 
     yield if block_given?
 
@@ -83,7 +83,7 @@ module ApidocoDsl
     @depth_stack ||= []
     @param = Param.new(key, type, required, description, notes, validations)
 
-    if type.downcase == 'hash'
+    if %w(hash array).include?(type.downcase)
       @depth_stack << @param.param_key
       return resolve_hash_param(block)
     else
@@ -127,6 +127,10 @@ module ApidocoDsl
   private
 
   def fetch_param_group(group)
+    p '&&&&&&&&&&'
+    p '&&&&&&&&&&'
+    p '&&&&&&&&&&'
+    p group
     return @@param_groups[group].params
   end
 
