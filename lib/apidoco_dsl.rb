@@ -53,6 +53,11 @@ module ApidocoDsl
     @doc.doc_header = h
   end
 
+  def sort_order(s)
+    raise "Must be inside a doc block" unless @doc
+    @doc.doc_sort_order = s
+  end
+
   def params(group: nil, array_of: nil, &block)
     raise "must be inside a doc block"  unless @doc
 
