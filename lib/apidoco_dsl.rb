@@ -18,17 +18,14 @@ module ApidocoDsl
   def api_doc(&block)
     @doc          = ApiDoc.new
     yield
-
     @@api_docs << @doc
-    @doc = nil
   end
 
   def def_param_group(group_name, &block)
-    @hash_params = ''
-
     @pg = ParamGroup.new(group_name)
     yield
     @@param_groups[group_name] = @pg
+    @pg = nil
   end
 
   def published(p)
@@ -59,27 +56,29 @@ module ApidocoDsl
   def params(group: nil, &block)
     raise "must be inside a doc block"  unless @doc
 
-    @doc.params = fetch_param_group(group) if group
+    @params = []
+    @params = fetch_param_group(group) if group
 
     yield if block_given?
 
-    @params     = []
     @doc.params = @params
+    @params = nil
   end
 
   def response_params(group: nil, &block)
     raise "must be inside a doc block"  unless @doc
 
-    @doc.params = fetch_param_group(group) if group
+    @response_params = []
+    @response_params = fetch_param_group(group) if group
 
     yield if block_given?
 
-    @params = []
-    @doc.response_params = @params
+    @doc.response_params = @response_params
+    @response_params = nil
   end
 
   def param(key: nil, type: nil, required: false, description: '', notes: '', validations: '', &block)
-    raise "must be inside a params block"  unless @params || @pg
+    raise "must be inside a params block"  unless @params || @response_params || @pg
 
     @depth_stack ||= []
     @param = Param.new(key, type, required, description, notes, validations)
@@ -98,7 +97,8 @@ module ApidocoDsl
     if @pg
       @pg.params << @param
     else
-      @params << @param
+      push_to = @params || @response_params
+      push_to << @param
     end
   end
 
