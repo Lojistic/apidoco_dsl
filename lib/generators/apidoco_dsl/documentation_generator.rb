@@ -4,7 +4,7 @@ module ApidocoDsl
       desc "Generate static JSON documentation for your API endpoints"
 
       def generate_docs
-        docs = ApidocoDsl.fetch_docs()
+        docs = ApidocoDsl.fetch_docs
         base_path = "#{Rails.root.to_s}/docs/"
 
         docs.each do |doc|
