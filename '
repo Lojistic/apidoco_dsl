@@ -70,9 +70,12 @@ module ApidocoDsl
         ancestors << ancestor
         ancestor = ancestor.try(:parent)
       end
+      p '&&&&&&&&&&&&&'
+      p '&&&&&&&&&&&&&'
+      p '&&&&&&&&&&&&&'
+      pp keys
 
       keys = ancestors.map{|a| a.try(:display_key) }.reverse
-
       compounded = keys.join('')
       return compounded + display_key
     end

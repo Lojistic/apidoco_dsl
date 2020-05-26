@@ -42,7 +42,7 @@ module ApidocoDsl
     #alias property param
 
     def param_group(group_name)
-      @api.param_groups[group_name].params.each{|param| push_to << param }
+      @api.param_groups[group_name].params.each{|param| param = param.deep_dup; param.parent = self; push_to << param }
     end
 
   end
