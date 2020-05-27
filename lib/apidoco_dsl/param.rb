@@ -60,7 +60,7 @@ module ApidocoDsl
     private
 
     def compound_key
-      return param_key unless @parent && @parent.is_a?(Param)
+      return param_key.to_s unless @parent && @parent.is_a?(Param)
 
       ancestors = []
       this_parent = @parent
@@ -73,7 +73,7 @@ module ApidocoDsl
 
       keys = ancestors.map{|a| a.try(:display_key) }.reverse
 
-      compounded = keys.join('')
+      compounded = keys.map(&:to_s).join('')
       return compounded + display_key
     end
 

@@ -17,7 +17,11 @@ module ApidocoDsl
       @param_destination   = 'request'
     end
 
-    def returns(param_group: nil, &block)
+    def param_key
+      "Document"
+    end
+
+    def returns(&block)
       @param_destination = 'response'
       self.instance_exec(&block)
       @param_destination = 'request'
@@ -59,16 +63,16 @@ module ApidocoDsl
     private
 
     def unroll_parameters(params, unrolled = [])
-      # Params can have params.
-      # Param groups have params.
-      # Everybody has params...
       # Unrolling parameters is a matter of recursively seeking down through each base set of params for
       # each of _their_ params, and assigning/setting keys appropriately.
 
       params.each do |pr|
-        if %w(hash array).include?(pr.param_type.downcase)
+        if pr.params.any?
+
           unrolled << pr.to_h
-          unroll_parameters(pr.doc_request_params, unrolled)
+          duped = pr.params.dup
+          duped.each{|d| d.parent = pr; }
+          unroll_parameters(duped, unrolled)
         else
           unrolled << pr.to_h
         end

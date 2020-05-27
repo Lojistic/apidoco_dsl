@@ -16,6 +16,33 @@ module ApidocoDsl
     end
     alias doc_response_params doc_request_params
 
+
+    def reparent(new_parent)
+      original_params = @params.deep_dup
+      @params = []
+
+      p '&&&&&&&&&&'
+      p '&&&&&&&&&&'
+      p '&&&&&&&&&&'
+      #original_params.each do |param|
+        #p param.parent.class
+        #p param.display_key #unless param.parent
+      #end
+
+      #original_params.each do |param|
+        #param = param.dup
+        #param.parent = new_parent
+
+        #@params << param
+      #end
+
+      @params.each do |param|
+        p param.parent.parent.class
+        p param.parent.display_key
+        p param.display_key #unless param.parent
+      end
+    end
+
     private
 
     def push_to
