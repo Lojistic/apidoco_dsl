@@ -1,6 +1,6 @@
 module ApidocoDsl
   class Api
-    attr_accessor :api_docs, :param_groups
+    attr_accessor :api_docs, :param_groups, :namespace, :resource
 
     def initialize
       @api_docs = []

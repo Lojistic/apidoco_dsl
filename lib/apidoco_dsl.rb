@@ -15,6 +15,15 @@ module ApidocoDsl
     return @@api.api_docs
   end
 
+  def namespace(namespace)
+    @@api.namespace = namespace
+
+  end
+
+  def resource(resource)
+    @@api.resource = resource
+  end
+
   def api_doc(&block)
     api_doc = ApiDoc.new(@@api)
     api_doc.instance_exec(&block)

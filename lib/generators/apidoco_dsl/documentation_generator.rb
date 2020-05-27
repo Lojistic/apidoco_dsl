@@ -8,7 +8,7 @@ module ApidocoDsl
         base_path = "#{Rails.root.to_s}/docs/"
 
         docs.each do |doc|
-          doc_path = "#{base_path}/#{doc.doc_folder}/#{doc.doc_name.gsub(' ', '').underscore}.json"
+          doc_path = "#{base_path}/#{doc.doc_folder}/#{doc.doc_file}.json"
           create_file(doc_path, doc.to_json, force: true)
         end
       end
