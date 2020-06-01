@@ -5,7 +5,7 @@ module ApidocoDsl
 
       def generate_docs
         docs = ApidocoDsl.fetch_docs
-        base_path = "#{Rails.root.to_s}/docs/"
+        base_path = Apidoco.base_path
 
         docs.each do |doc|
           doc_path = "#{base_path}/#{doc.doc_folder}/#{doc.doc_file}.json"
