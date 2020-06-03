@@ -134,13 +134,108 @@ A param_group is used to, literally, group a set of params or properties togethe
 
 #### example_request / example_response
 
-There are two ways to provide an example request or an example response for an endpoint. The first is to provide a block to the method and
+There are two ways to provide an example request or an example response for an endpoint. The first is to provide a block to the method itself, adding your example inside:
+
+```ruby
+example_request do
+  { "param1": "foo", "param2": "bar" }
+end
+```
+
+The hash will be automatically converted to JSON for presentation purposes.
 
 
-#### example_response
+Alternatively, you can provide a `path` argument that points to a `json` file:
+
+```ruby
+  example_request path: "/examples/endpoint_request.json"
+```
+
 #### returns
 
+If your API endpoint returns any properties, the `returns` method allows you to specify what they are by identifying them as properties:
 
+```ruby
+returns do
+  property :response_1, type: "String", desc: "The first part of the response"
+  property :response_2, type: "Integer", desc:
+end
+```
+
+You can also specify a response `code`, whether or not the endpoint returns any other properties. If not specified, the `code` is 200.
+
+```ruby
+  returns code: 203 do
+    ...
+  end
+```
+
+### Params and Properties
+
+Describing which parameters your endpoints take and what properties they return is handled by the `param` and `property` methods respectively. These methods work the same way and are technically interchangeable. The only difference is that any defined properties
+are considered `required` by default.
+
+Here's an example param:
+
+```ruby
+  param :age, type: 'Integer', desc: "How old this person is.", notes: "Used for setting various interface options", validations: "Must be a positive integer.", required: true
+```
+
+A param/property takes the following attributes:
+
+#### name
+
+The name of the param/property is the first argument to the method and is always required. Note that it is a positional argument, not a kwarg.
+
+#### type
+
+A kwarg that describes the "type" of the parameter. If you provide a string, this value can be anything you want. It's also possible to pass any valid Ruby type, (String, Array, Hash, etc.), without enclosing it in a string. The `type` argument is required.
+
+#### desc
+
+An optional kwarg that takes a string describing the parameter. For the sake of formatting, it's best if the description is kept relatively short.
+
+#### notes
+
+An optional kwarg for providing additional context or information about a parameter. For the sake of formatting, it's best if the description is kept relatively short. Notes are an optional means of highlighting specific information about a parameter, (such as acceptable values), etc.
+
+#### validations
+
+An optional kwarg for adding a note about any validations present on the given parameter. For the sake of formatting, it's best if the validations argument is kept relatively short.
+
+#### required
+
+Whether or not this parameter is required. Take a boolean and defaults to `false` for a param and `true` for a property.
+
+### Param Groups
+
+Param groups allow you to define a set of parameters that can be shared between individual documentation blocks, reducing duplication. You define them by calling `def_param_group`:
+
+```ruby
+  def_param_group :my_group do
+    param :param1, type: "Integer", desc: "The first param"
+    param :param2, type: "Integer", desc: "The second param"
+  end
+```
+You can define params or properties inside of a param group just like you would inside of an `api_doc` block. To add a param group to a doc block, use the `param_group` method:
+
+```ruby
+  api_doc do
+    ...
+
+    param_group :my_group
+
+    ...
+
+    returns do
+      param_group :my_response_group
+    end
+  end
+```
+
+The `param_group` method takes a single argument, the name of the param group you want to invoke.
+
+Once a param group is defined, it can be used in _any_ documentation block, even those that are in a different source file. For that reason, it may be convenient to define your param groups in files separate from your api documentation itself.
 
 ## Installation
 
@@ -157,9 +252,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install apidoco_dsl
-
-## Usage
-
 
 ## Development
 
