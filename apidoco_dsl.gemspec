@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   end
   spec.bindir        = "exe"
   spec.add_dependency "apidoco", "~> 1.5"
+  spec.add_dependency "kramdown"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 

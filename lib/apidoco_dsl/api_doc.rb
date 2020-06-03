@@ -1,15 +1,17 @@
+require 'kramdown'
+
 module ApidocoDsl
   class ApiDoc
     include Documentable
     attr_accessor :doc_request_params, :doc_response_params, :doc_published, :doc_name,
                   :doc_endpoint, :doc_http_method, :doc_header, :doc_examples,
                   :doc_sort_order, :doc_description, :doc_request_example, :doc_response_example,
-                  :doc_return_code, :doc_namespace, :doc_resource
+                  :doc_return_code, :doc_namespace, :doc_resource, :doc_markdown
 
     #attr_reader :api
 
     SETTABLE = ['published', 'name', 'endpoint',
-                'http_method', 'header', 'description', 'sort_order']
+                'http_method', 'header', 'markdown', 'sort_order']
 
     def initialize(api)
       @api                 = api
@@ -55,6 +57,17 @@ module ApidocoDsl
       @doc_examples << ex
     end
 
+    def description(txt = nil, path: nil)
+      if path
+        txt  = File.read(path)
+        erb  = ERB.new(txt).result
+        html = Kramdown::Document.new(erb).to_html
+        @doc_description = ERB.new(html).result
+      else
+        @doc_description = txt
+      end
+    end
+
     def doc_folder
       doc_namespace.split('::').map(&:underscore).map(&:downcase).join('/') + "/#{doc_resource.to_s.underscore}/"
     end
@@ -76,6 +89,7 @@ module ApidocoDsl
       doc['examples']        = doc_examples unless doc_examples.empty?
       doc['sort_order']      = doc_sort_order unless doc_sort_order.nil?
       doc['return_code']     = doc_return_code
+      doc['markdown']        = doc_markdown
 
       return JSON.pretty_generate(doc)
     end
