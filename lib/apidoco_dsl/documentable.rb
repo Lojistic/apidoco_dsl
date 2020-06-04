@@ -54,6 +54,7 @@ module ApidocoDsl
       pg = @api.param_groups[group_name].deep_dup
       #pg.reparent(self) # Make the calling object the top-level parent for every param in this group
 
+      return false unless pg # FIXME This seems more like an autoloading issue than anything?
       pg.params.each do |param|
         push_to << param
       end
